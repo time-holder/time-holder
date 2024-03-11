@@ -1,0 +1,77 @@
+<svg fill="none" viewBox="0 0 600 300" width="600" height="300" xmlns="http://www.w3.org/2000/svg">
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        .container {
+          --color-main: #ef476f;
+          --color-primary: #ffd166;
+          --color-secondary: #06d6a0;
+          --color-tertiary: #118ab2;
+
+          background: linear-gradient(
+            -45deg,
+            var(--color-main),
+            var(--color-primary),
+            var(--color-secondary),
+            var(--color-tertiary)
+          );
+          background-size: 400% 400%;
+          animation: gradient 5s ease-in-out infinite;
+
+          padding: 20px 0;
+          width: 100%;
+
+          color: white;
+          text-shadow: black 1px 0 0,
+            black 0 1px 0,
+            black -1px 0 0,
+            black 0 -1px 0;
+          text-align: center;
+          line-height: 1;
+          font-size: 30px;
+          font-weight: bold;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        @media (prefers-color-scheme: light) {
+          .container {
+            --color-main: #ffc8dd;
+            --color-primary: #ffafcc;
+            --color-secondary: #bde0fe;
+            --color-tertiary: #a2d2ff;
+          }
+        }
+      </style>
+
+      <div class="container">
+        <p>TIME held is wealth possessed</p>
+        <p>
+          <span style="font-size: 1em;">💸</span>
+          <span style="font-size: 1em;">💸</span>
+          <span style="font-size: 1em;">💸</span>
+          <span style="font-size: 1em;">⏳</span>
+          <span style="font-size: 2em;">💎</span>
+          <span style="font-size: 1em;">⏳</span>
+          <span style="font-size: 1em;">💸</span>
+          <span style="font-size: 1em;">💸</span>
+          <span style="font-size: 1em;">💸</span>
+        </p>
+        <p>
+          <span style="font-size: 1em;">🤲</span>
+        </p>
+      </div>
+    </div>
+  </foreignObject>
+</svg>
