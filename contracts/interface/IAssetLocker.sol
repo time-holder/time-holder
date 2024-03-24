@@ -9,6 +9,11 @@ interface IAssetLocker {
   function unlockTime() external view returns (uint256);
 
   /**
+   * @dev The return value indicates whether it has been unlocked.
+   */
+  function isUnlocked() external view returns (bool);
+
+  /**
    * @dev Transfers guardianship of the contract to a new account (`newGuardian`).
    * Can only be called by the current guardian.
    */

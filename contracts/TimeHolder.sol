@@ -16,7 +16,7 @@ contract TimeHolder is ITimeHolder, Gov {
   function version()
   external pure virtual override
   returns (string memory) {
-    return "1.1.0";
+    return "1.1.1";
   }
 
   error LockerHasBeenUnlocked(address payable locker);
@@ -57,7 +57,7 @@ contract TimeHolder is ITimeHolder, Gov {
     uint256 unlockTime = AssetLocker(locker).unlockTime();
     if (unlockTime <= block.timestamp) return 0;
     uint256 lockTime = unlockTime - block.timestamp;
-    if (lockTime <= shortenedTime) return lockTime;
+    if (lockTime < shortenedTime) shortenedTime = lockTime;
     return shortenedTime * _govTokenQuantityOfOneCoin();
   }
 }

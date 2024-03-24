@@ -64,6 +64,14 @@ describe('AssetLocker', () => {
               BigInt(createTime + lockTime),
             )
           })
+
+          it('#isUnlocked()', async () => {
+            const { AssetLocker } =
+              await loadFixture(deployFixture)
+            assert.equal(await AssetLocker.read.isUnlocked(), false)
+            await time.increaseTo(await AssetLocker.read.unlockTime())
+            assert.equal(await AssetLocker.read.isUnlocked(), true)
+          })
         },
       },
       Security: {

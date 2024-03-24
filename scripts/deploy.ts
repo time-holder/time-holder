@@ -36,7 +36,7 @@ async function main () {
       kind: 'uups'
     }
   )
-  console.log(`TimeHolder deployed to: ${TimeSeller.address}`)
+  console.log(`TimeSeller deployed to: ${TimeSeller.address}`)
 
   const [ owner ] = await viem.getWalletClients() as WalletClient[]
   await owner.writeContract({

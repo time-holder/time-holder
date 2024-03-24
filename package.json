@@ -1,6 +1,6 @@
 {
   "name": "@timeholder/time-holder",
-  "version": "1.1.2",
+  "version": "1.2.1",
   "description": "Time-lock contracts for crypto assets, implemented using Solidity and based on the asset-box model.",
   "license": "MIT",
   "scripts": {
@@ -43,15 +43,15 @@
     "dist"
   ],
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox-viem": "^2.0.0",
+    "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
     "@openzeppelin/hardhat-upgrades": "^3.0.5",
     "chai": "^4.4.1",
     "dotenv": "^16.4.5",
-    "hardhat": "^2.22.1"
+    "hardhat": "^2.22.2"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
     "@openzeppelin/contracts-upgradeable": "^5.0.2",
-    "@timeholder/asset-box": "^1.1.4"
+    "@timeholder/asset-box": "^1.1.6"
   }
 }

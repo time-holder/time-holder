@@ -15,7 +15,7 @@ contract AssetLocker is IAssetLocker, AssetBox {
   function version()
   external pure virtual override
   returns (string memory) {
-    return "1.1.0";
+    return "1.2.0";
   }
 
   error ShortenedTimeMustBeGreaterThanZero();
@@ -59,6 +59,12 @@ contract AssetLocker is IAssetLocker, AssetBox {
   external view
   returns (uint256) {
     return _unlockTime;
+  }
+
+  function isUnlocked()
+  external view
+  returns (bool) {
+    return block.timestamp >= _unlockTime;
   }
 
   function transferGuardianship(address newGuardian)
