@@ -41,7 +41,7 @@ describe('AssetLocker', () => {
       }
     },
     {
-      State: {
+      stateTest: {
         extra: () => {
           it('#name()', async () => {
             const { AssetLocker } = await loadFixture(deployFixture)
@@ -66,15 +66,14 @@ describe('AssetLocker', () => {
           })
 
           it('#isUnlocked()', async () => {
-            const { AssetLocker } =
-              await loadFixture(deployFixture)
+            const { AssetLocker } = await loadFixture(deployFixture)
             assert.equal(await AssetLocker.read.isUnlocked(), false)
             await time.increaseTo(await AssetLocker.read.unlockTime())
             assert.equal(await AssetLocker.read.isUnlocked(), true)
           })
         },
       },
-      Security: {
+      securityTest: {
         extra: () => {
           it('#transferGuardianship()', async () => {
             const { AssetLocker, guardian, user } =
@@ -102,7 +101,7 @@ describe('AssetLocker', () => {
           })
         },
       },
-      Callable: {
+      callableTest: {
         '#callContract()': async (data, props) => {
           const { guardian } = await deployFixture()
           const { WETH, NFT721, Callable, user } = data || {}
@@ -169,7 +168,7 @@ describe('AssetLocker', () => {
           )
         },
       },
-      Withdrawable: {
+      withdrawableTest: {
         '#withdraw()': async data => {
           const { guardian } = await deployFixture()
           const { Withdrawable, user } = data || {}

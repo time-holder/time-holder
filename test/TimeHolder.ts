@@ -21,6 +21,7 @@ describe('TimeHolder', () => {
     const lockTime = 3600 * 24 * 30
 
     const TIME = await viem.deployContract('TIME')
+    const USDC = await viem.deployContract('USDC')
     const TimeHolder = await deployProxy('TimeHolder', [TIME.address], {
       initializer: 'initialize',
       kind: 'uups',
@@ -39,8 +40,16 @@ describe('TimeHolder', () => {
       args: [user.account.address, parseUnits(lockTime.toString(), 18)],
     })
 
+    await user.writeContract({
+      address: USDC.address,
+      abi: USDC.abi,
+      functionName: 'mint',
+      args: [parseUnits(lockTime.toString(), 6)],
+    })
+
     return {
       TIME,
+      USDC,
       TimeHolder,
       AssetLocker,
       publicClient,
@@ -86,9 +95,20 @@ describe('TimeHolder', () => {
     })
 
     it('#unlock() #getUnlockAmount()', async () => {
-      const { TIME, TimeHolder, AssetLocker, user } =
+      const { TIME, USDC, TimeHolder, AssetLocker, user } =
         await loadFixture(deployFixture)
       assert((await AssetLocker.read.unlockTime()) > (await time.latest()))
+
+      const amount = await TimeHolder.read.getUnlockAmount([
+        AssetLocker.address,
+      ])
+
+      await user.writeContract({
+        address: USDC.address,
+        abi: USDC.abi,
+        functionName: 'approve',
+        args: [TimeHolder.address, amount],
+      })
       await assert.isRejected(
         user.writeContract({
           address: TimeHolder.address,
@@ -99,9 +119,6 @@ describe('TimeHolder', () => {
         'ERC20InsufficientAllowance',
       )
 
-      const amount = await TimeHolder.read.getUnlockAmount([
-        AssetLocker.address,
-      ])
       await user.writeContract({
         address: TIME.address,
         abi: TIME.abi,
@@ -118,12 +135,23 @@ describe('TimeHolder', () => {
     })
 
     it('#shortenUnlockTime() #getShortenUnlockTimeAmount()', async () => {
-      const { TIME, TimeHolder, AssetLocker, user, lockTime } =
+      const { TIME, USDC, TimeHolder, AssetLocker, user, lockTime } =
         await loadFixture(deployFixture)
       const unlockTime = await AssetLocker.read.unlockTime()
       assert(unlockTime > (await time.latest()))
 
       const shortenedTime = BigInt(lockTime * 0.3)
+      const amount = await TimeHolder.read.getShortenUnlockTimeAmount([
+        AssetLocker.address,
+        shortenedTime,
+      ])
+
+      await user.writeContract({
+        address: USDC.address,
+        abi: USDC.abi,
+        functionName: 'approve',
+        args: [TimeHolder.address, amount],
+      })
       await assert.isRejected(
         user.writeContract({
           address: TimeHolder.address,
@@ -134,10 +162,6 @@ describe('TimeHolder', () => {
         'ERC20InsufficientAllowance',
       )
 
-      const amount = await TimeHolder.read.getShortenUnlockTimeAmount([
-        AssetLocker.address,
-        shortenedTime,
-      ])
       await user.writeContract({
         address: TIME.address,
         abi: TIME.abi,

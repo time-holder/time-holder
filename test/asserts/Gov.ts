@@ -11,15 +11,15 @@ import type {
 } from '@timeholder/asset-box/dist/test/common'
 import type { TestTypes } from '../common'
 
-type StateOptions = {
+type StateTestOptions = {
   extra?: () => void
 }
 
-type SecurityOptions = {
+type SecurityTestOptions = {
   extra?: () => void
 }
 
-export async function testGov(
+export function testGov(
   contractName: 'TimeHolder' | 'TimeSeller',
   baseDeployFixture: () => Promise<{
     TIME: TestTypes['TIME']
@@ -27,11 +27,11 @@ export async function testGov(
     owner: WalletClient
   }>,
   {
-    State,
-    Security,
+    stateTest,
+    securityTest,
   }: {
-    State?: StateOptions
-    Security?: SecurityOptions
+    stateTest?: StateTestOptions
+    securityTest?: SecurityTestOptions
   } = {},
 ) {
   async function deployFixture() {
@@ -72,7 +72,7 @@ export async function testGov(
       )
     })
 
-    State?.extra?.()
+    stateTest?.extra?.()
   })
 
   describe('Security', () => {
@@ -118,7 +118,7 @@ export async function testGov(
       assert.equal(await Gov.read.govToken(), getAddress(USDC.address))
     })
 
-    Security?.extra?.()
+    securityTest?.extra?.()
   })
 
   describe('Upgradeable', () => {

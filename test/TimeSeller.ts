@@ -77,7 +77,7 @@ describe('TimeSeller', () => {
       }
     },
     {
-      State: {
+      stateTest: {
         extra: () => {
           it('#currenciesAndRates()', async () => {
             const { TimeSeller, currencies, rates } =
@@ -89,7 +89,7 @@ describe('TimeSeller', () => {
           })
         },
       },
-      Security: {
+      securityTest: {
         extra: () => {
           it('#setCurrenciesAndRates()', async () => {
             const { TimeSeller, guardian, hacker, currencies, rates } =
