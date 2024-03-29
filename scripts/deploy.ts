@@ -43,7 +43,7 @@ async function main () {
     address: TIME.address,
     abi: TIME.abi,
     functionName: 'transfer',
-    args: [ TimeSeller.address, await TIME.read.totalSupply() ]
+    args: [ TimeSeller.address, await TIME.read.totalSupply() / 2n ]
   })
   const balance = await TIME.read.balanceOf([ TimeSeller.address ])
   console.log(`TIME transferred to TimeSeller: ${balance}`)

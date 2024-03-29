@@ -4,8 +4,9 @@
 
 # ⏳ TIME Holder
 
-[![Tests](https://github.com/time-holder/time-holder/actions/workflows/tests.yml/badge.svg)](https://github.com/time-holder/time-holder/actions/workflows/tests.yml)
 [![npm version](https://img.shields.io/npm/v/@timeholder/time-holder/latest.svg)](https://www.npmjs.com/package/@timeholder/time-holder)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Tests](https://github.com/time-holder/time-holder/actions/workflows/tests.yml/badge.svg)](https://github.com/time-holder/time-holder/actions/workflows/tests.yml)
 
 🤚💎✋A cryptocurrency asset management solution that turns you into "Diamond Hands."
 
