@@ -1,6 +1,6 @@
 {
   "name": "@timeholder/time-holder",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Time-lock contracts for crypto assets, implemented using Solidity and based on the asset-box model.",
   "license": "MIT",
   "scripts": {
@@ -52,6 +52,6 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
     "@openzeppelin/contracts-upgradeable": "^5.0.2",
-    "@timeholder/asset-box": "^1.1.8"
+    "@timeholder/asset-box": "^1.1.11"
   }
 }

@@ -6,13 +6,10 @@ import {
   deployContracts,
   claimAssets,
 } from '@timeholder/asset-box/dist/test/common'
-import type {
-  PublicClient,
-  WalletClient,
-} from '@timeholder/asset-box/dist/test/common'
-import type { TestTypes } from './common'
 import { testGov } from './asserts/Gov'
 import { deployProxy } from '../utils'
+import type { PublicClient, WalletClient } from '@nomicfoundation/hardhat-viem/types'
+import type { TestTypes } from './common'
 
 describe('TimeSeller', () => {
   async function deployFixture() {
@@ -140,7 +137,7 @@ describe('TimeSeller', () => {
           address: TimeSeller.address,
           abi: TimeSeller.abi,
           functionName: 'buy',
-          args: [currencyETH, 0],
+          args: [currencyETH, 0n],
         }),
         'PurchaseQuantityMustBeGreaterThanZero',
       )
@@ -149,7 +146,7 @@ describe('TimeSeller', () => {
           address: TimeSeller.address,
           abi: TimeSeller.abi,
           functionName: 'buy',
-          args: [currencyUSDC, 0],
+          args: [currencyUSDC, 0n],
         }),
         'PurchaseQuantityMustBeGreaterThanZero',
       )
@@ -293,7 +290,7 @@ describe('TimeSeller', () => {
           address: TimeSeller.address,
           abi: TimeSeller.abi,
           functionName: 'spend',
-          args: [currencyETH, 0],
+          args: [currencyETH, 0n],
         }),
         'PurchaseAmountMustBeGreaterThanZero',
       )
@@ -302,7 +299,7 @@ describe('TimeSeller', () => {
           address: TimeSeller.address,
           abi: TimeSeller.abi,
           functionName: 'spend',
-          args: [currencyUSDC, 0],
+          args: [currencyUSDC, 0n],
         }),
         'PurchaseAmountMustBeGreaterThanZero',
       )

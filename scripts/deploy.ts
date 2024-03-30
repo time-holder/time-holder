@@ -1,6 +1,7 @@
-import { viem, ethers } from 'hardhat'
+import { viem } from 'hardhat'
+import { zeroAddress } from 'viem'
 import { deployProxy } from '../utils'
-import type { WalletClient } from '@timeholder/asset-box/dist/test/common'
+import type { WalletClient } from '@nomicfoundation/hardhat-viem/types'
 
 async function main () {
   const TIME = await viem.deployContract('TIME')
@@ -19,7 +20,7 @@ async function main () {
   console.log(`TimeHolder deployed to: ${TimeHolder.address}`)
 
   const currencies = [
-    ethers.ZeroAddress
+    zeroAddress
   ]
   const rates = [
     3_600n * 3_000n

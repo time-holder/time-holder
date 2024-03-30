@@ -6,7 +6,7 @@ import { viem } from 'hardhat'
 import { getAddress, parseEther } from 'viem'
 import { assert } from 'chai'
 import type { TestTypes } from './common'
-import type { WalletClient } from '@timeholder/asset-box/dist/test/common'
+import type { WalletClient } from '@nomicfoundation/hardhat-viem/types'
 import { testAssetBox } from '@timeholder/asset-box/dist/test/asserts/AssetBox'
 
 describe('AssetLocker', () => {
@@ -180,6 +180,7 @@ describe('AssetLocker', () => {
               address: AssetLocker.address,
               abi: AssetLocker.abi,
               functionName: 'withdraw',
+              args: [],
             }),
             'UnlockTimeHasNotArrivedYet',
           )
@@ -191,6 +192,7 @@ describe('AssetLocker', () => {
               address: AssetLocker.address,
               abi: AssetLocker.abi,
               functionName: 'withdraw',
+              args: [],
             }),
             'OwnableUnauthorizedAccount',
           )
@@ -323,6 +325,7 @@ describe('AssetLocker', () => {
           address: AssetLocker.address,
           abi: AssetLocker.abi,
           functionName: 'unlock',
+          args: [],
         }),
         'UnauthorizedAccount',
       )
@@ -331,6 +334,7 @@ describe('AssetLocker', () => {
         address: AssetLocker.address,
         abi: AssetLocker.abi,
         functionName: 'unlock',
+        args: [],
       })
       assert((await AssetLocker.read.unlockTime()) <= (await time.latest()))
     })

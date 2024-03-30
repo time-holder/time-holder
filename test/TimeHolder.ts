@@ -5,13 +5,10 @@ import {
 import { viem } from 'hardhat'
 import { assert } from 'chai'
 import { getAddress, parseUnits } from 'viem'
-import type {
-  PublicClient,
-  WalletClient,
-} from '@timeholder/asset-box/dist/test/common'
-import type { TestTypes } from './common'
 import { testGov } from './asserts/Gov'
 import { deployProxy } from '../utils'
+import type { PublicClient, WalletClient } from '@nomicfoundation/hardhat-viem/types'
+import type { TestTypes } from './common'
 
 describe('TimeHolder', () => {
   async function deployFixture() {
@@ -101,7 +98,7 @@ describe('TimeHolder', () => {
 
       const amount = await TimeHolder.read.getUnlockAmount([
         AssetLocker.address,
-      ])
+      ]) as bigint
 
       await user.writeContract({
         address: USDC.address,
@@ -144,7 +141,7 @@ describe('TimeHolder', () => {
       const amount = await TimeHolder.read.getShortenUnlockTimeAmount([
         AssetLocker.address,
         shortenedTime,
-      ])
+      ]) as bigint
 
       await user.writeContract({
         address: USDC.address,

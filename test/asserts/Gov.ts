@@ -5,10 +5,7 @@ import { getAddress } from 'viem'
 import { upgradeProxy } from '../../utils'
 import { testWithdrawable } from '@timeholder/asset-box/dist/test/asserts/Withdrawable'
 import { deployContracts } from '@timeholder/asset-box/dist/test/common'
-import type {
-  PublicClient,
-  WalletClient,
-} from '@timeholder/asset-box/dist/test/common'
+import type { PublicClient, WalletClient } from '@nomicfoundation/hardhat-viem/types'
 import type { TestTypes } from '../common'
 
 type StateTestOptions = {
