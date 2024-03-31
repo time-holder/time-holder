@@ -2,12 +2,21 @@
 pragma solidity ^0.8.20;
 
 interface ITimeHolder {
+  event SetAmountPerSecond(uint256 amount);
 
   /**
-   * @dev Transfer the guardianship of the locker to a new guardian.
-   * Can only be called by the current owner.
+   * @dev Set the amount needed to per second.
+   *
+   * amount = 10 ** govTokenDecimals() (1Second = 1Token)
    */
-  function transferGuardianship(address payable locker, address newGuardian) external;
+  function setAmountPerSecond(uint256 amount) external;
+
+  /**
+   * @dev Get the amount needed to per second.
+   *
+   * amount = 10 ** govTokenDecimals() (1Second = 1Token)
+   */
+  function getAmountPerSecond() external view returns (uint256);
 
   /**
    * @dev Unlock locker.
@@ -17,9 +26,9 @@ interface ITimeHolder {
   /**
    * @dev Get the amount needed to unlock.
    *
-   * amount = 10 ** govTokenDecimals() * seconds (1 seconds = 1TIME)
+   * amount = getAmountPerSecond() * seconds
    */
-  function getUnlockAmount(address payable locker) external view returns (uint256);
+  function getAmountForUnlock(address payable locker) external view returns (uint256);
 
   /**
    * @dev Shorten unlock time of locker.
@@ -33,7 +42,13 @@ interface ITimeHolder {
    *
    * @param shortenedTime is seconds and must be greater than `0`.
    *
-   * amount = 10 ** govTokenDecimals() * seconds (1 seconds = 1TIME)
+   * amount = getAmountPerSecond() * seconds
    */
-  function getShortenUnlockTimeAmount(address payable locker, uint256 shortenedTime) external view returns (uint256);
+  function getAmountForShortenUnlockTime(address payable locker, uint256 shortenedTime) external view returns (uint256);
+
+  /**
+   * @dev Transfer the guardianship of the locker to a new guardian.
+   * Can only be called by the current owner.
+   */
+  function transferGuardianship(address payable locker, address newGuardian) external;
 }

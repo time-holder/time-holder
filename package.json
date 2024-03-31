@@ -1,18 +1,17 @@
 {
   "name": "@timeholder/time-holder",
-  "version": "1.2.4",
+  "version": "1.3.3",
   "description": "Time-lock contracts for crypto assets, implemented using Solidity and based on the asset-box model.",
   "license": "MIT",
   "scripts": {
     "build": "npx hardhat compile",
     "net": "npx hardhat node",
     "test": "npx hardhat test",
-    "flatten": "mkdir -p dist/contracts && npm run flatten:AssetLocker && npm run flatten:TIME && npm run flatten:TimeHolder && npm run flatten:TimeSeller",
+    "flatten": "mkdir -p dist/contracts && npm run flatten:AssetLocker && npm run flatten:TIME && npm run flatten:TimeHolder",
     "flatten:AssetLocker": "npx hardhat flatten contracts/AssetLocker.sol > dist/contracts/AssetLocker.sol",
     "flatten:TIME": "npx hardhat flatten contracts/TIME.sol > dist/contracts/TIME.sol",
     "flatten:TimeHolder": "npx hardhat flatten contracts/TimeHolder.sol > dist/contracts/TimeHolder.sol",
-    "flatten:TimeSeller": "npx hardhat flatten contracts/TimeSeller.sol > dist/contracts/TimeSeller.sol",
-    "release": "npm run test && npm run build && npm run flatten && npm publish --access public",
+    "release": "npm run test && npm run build && tsc && npm run flatten && npm publish --access public",
     "deploy:test": "npx hardhat run scripts/deploy.ts --network hardhat",
     "deploy:localhost": "npx hardhat run scripts/deploy.ts --network localhost"
   },
@@ -45,6 +44,8 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
     "@openzeppelin/hardhat-upgrades": "^3.0.5",
+    "@types/debug": "^4.1.12",
+    "@types/proper-lockfile": "^4.1.4",
     "chai": "^4.4.1",
     "dotenv": "^16.4.5",
     "hardhat": "^2.22.2"
@@ -52,6 +53,6 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.2",
     "@openzeppelin/contracts-upgradeable": "^5.0.2",
-    "@timeholder/asset-box": "^1.1.11"
+    "@timeholder/asset-box": "^1.1.14"
   }
 }

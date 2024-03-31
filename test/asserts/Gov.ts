@@ -3,9 +3,12 @@ import { assert } from 'chai'
 import { viem } from 'hardhat'
 import { getAddress } from 'viem'
 import { upgradeProxy } from '../../utils'
+import { deployContracts } from '../common'
 import { testWithdrawable } from '@timeholder/asset-box/dist/test/asserts/Withdrawable'
-import { deployContracts } from '@timeholder/asset-box/dist/test/common'
-import type { PublicClient, WalletClient } from '@nomicfoundation/hardhat-viem/types'
+import type {
+  PublicClient,
+  WalletClient,
+} from '@nomicfoundation/hardhat-viem/types'
 import type { TestTypes } from '../common'
 
 type StateTestOptions = {
@@ -17,7 +20,7 @@ type SecurityTestOptions = {
 }
 
 export function testGov(
-  contractName: 'TimeHolder' | 'TimeSeller',
+  contractName: string,
   baseDeployFixture: () => Promise<{
     TIME: TestTypes['TIME']
     Gov: TestTypes['Gov']
@@ -33,27 +36,28 @@ export function testGov(
 ) {
   async function deployFixture() {
     const { TIME, Gov, owner } = await baseDeployFixture()
-    const testContracts = await deployContracts()
     const publicClient = (await viem.getPublicClient()) as PublicClient
     const walletClients = (await viem.getWalletClients()) as WalletClient[]
     const ownerIndex = walletClients.findIndex(
       client => client.account.address === owner.account.address,
     )
 
+    const { USDC } = await deployContracts()
+
     return {
-      ...testContracts,
+      USDC,
       TIME,
       Gov,
       publicClient,
-      guardian: owner,
+      owner,
       hacker: walletClients[ownerIndex + 1],
     }
   }
 
   describe('State', () => {
     it('#owner()', async () => {
-      const { guardian, Gov } = await loadFixture(deployFixture)
-      assert.equal(await Gov.read.owner(), getAddress(guardian.account.address))
+      const { owner, Gov } = await loadFixture(deployFixture)
+      assert.equal(await Gov.read.owner(), getAddress(owner.account.address))
     })
 
     it('#govToken()', async () => {
@@ -74,7 +78,7 @@ export function testGov(
 
   describe('Security', () => {
     it('#transferOwnership()', async () => {
-      const { Gov, guardian, hacker } = await loadFixture(deployFixture)
+      const { Gov, owner, hacker } = await loadFixture(deployFixture)
       await assert.isRejected(
         hacker.writeContract({
           address: Gov.address,
@@ -85,7 +89,7 @@ export function testGov(
         'OwnableUnauthorizedAccount',
       )
 
-      await guardian.writeContract({
+      await owner.writeContract({
         address: Gov.address,
         abi: Gov.abi,
         functionName: 'transferOwnership',
@@ -95,7 +99,7 @@ export function testGov(
     })
 
     it('#setGovToken()', async () => {
-      const { USDC, Gov, guardian, hacker } = await loadFixture(deployFixture)
+      const { USDC, Gov, owner, hacker } = await loadFixture(deployFixture)
       await assert.isRejected(
         hacker.writeContract({
           address: Gov.address,
@@ -106,7 +110,7 @@ export function testGov(
         'OwnableUnauthorizedAccount',
       )
 
-      await guardian.writeContract({
+      await owner.writeContract({
         address: Gov.address,
         abi: Gov.abi,
         functionName: 'setGovToken',
@@ -123,9 +127,13 @@ export function testGov(
       const { TIME, Gov } = await loadFixture(deployFixture)
       const version = await Gov.read.version()
       // @ts-ignore
-      const version2 = await viem.deployContract(`${contractName}V2`).then(c => c.read.version())
+      const version2 = await viem
+        .deployContract(`${contractName}V2`)
+        .then(c => c.read.version())
       // @ts-ignore
-      const version3 = await viem.deployContract(`${contractName}V3`).then(c => c.read.version())
+      const version3 = await viem
+        .deployContract(`${contractName}V3`)
+        .then(c => c.read.version())
       assert.notEqual(version, version2)
       assert.notEqual(version, version3)
 

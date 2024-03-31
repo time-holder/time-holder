@@ -34,12 +34,6 @@ abstract contract Gov is IGov, NFTHolder, Receivable, Withdrawable, Initializabl
   function _authorizeWithdraw(address sender)
   internal view override(Withdrawable) onlyOwner {}
 
-  function govToken()
-  public view virtual
-  returns (address) {
-    return _govToken;
-  }
-
   function setGovToken(address newGovToken)
   external virtual
   onlyOwner {
@@ -52,15 +46,15 @@ abstract contract Gov is IGov, NFTHolder, Receivable, Withdrawable, Initializabl
     emit SetGovToken(newGovToken);
   }
 
+  function govToken()
+  public view virtual
+  returns (address) {
+    return _govToken;
+  }
+
   function govTokenDecimals()
   public view virtual
   returns (uint8) {
     return ERC20(_govToken).decimals();
-  }
-
-  function _govTokenQuantityOfOneCoin()
-  internal view
-  returns (uint256) {
-    return 10 ** govTokenDecimals();
   }
 }

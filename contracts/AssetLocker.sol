@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IAssetLocker} from "./interface/IAssetLocker.sol";
 import {AssetBox} from "@timeholder/asset-box/contracts/AssetBox.sol";
 
@@ -15,7 +14,7 @@ contract AssetLocker is IAssetLocker, AssetBox {
   function version()
   external pure virtual override
   returns (string memory) {
-    return "1.2.0";
+    return "1.2.1";
   }
 
   error ShortenedTimeMustBeGreaterThanZero();
