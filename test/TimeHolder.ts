@@ -4,7 +4,7 @@ import {
 } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 import { viem } from 'hardhat'
 import { assert } from 'chai'
-import { getAddress, parseEther, parseUnits, zeroAddress } from 'viem'
+import { getAddress, parseEther, parseUnits } from 'viem'
 import { testGov } from './asserts/Gov'
 import { deployProxy } from '../utils'
 import { deployContracts } from './common'
@@ -26,8 +26,6 @@ describe('TimeHolder', () => {
     const [owner, user, hacker] =
       (await viem.getWalletClients()) as WalletClient[]
 
-    const lockTime = 3600 * 24 * 30
-
     const { TIME, USDC } = await deployContracts()
     const amountPerSecond = BigInt(10 ** (await TIME.read.decimals()))
     const TimeHolder = await deployProxy(
@@ -39,6 +37,7 @@ describe('TimeHolder', () => {
       },
     )
 
+    const lockTime = 3600 * 24 * 30
     const AssetLocker = (await viem.deployContract('AssetLocker' as never, [
       user.account.address,
       TimeHolder.address,

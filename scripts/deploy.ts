@@ -1,4 +1,5 @@
 import { viem } from 'hardhat'
+import { parseEther } from 'viem'
 import { deployProxy } from '../utils'
 
 async function main() {
@@ -8,9 +9,9 @@ async function main() {
   const amountPerSecond = BigInt(10 ** (await TIME.read.decimals()))
   const TimeHolder = await deployProxy(
     'TimeHolder',
-    [TIME.address, amountPerSecond],
+    [TIME.address, parseEther('0.001'), amountPerSecond],
     {
-      initializer: 'initialize(address,uint256)',
+      initializer: 'initialize(address,uint256,uint256)',
       kind: 'uups',
     },
   )
