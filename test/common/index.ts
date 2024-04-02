@@ -2,9 +2,10 @@ import { viem } from 'hardhat'
 import { deployContract } from '@timeholder/asset-box/dist/test/utils'
 import { deployContracts as baseDeployContracts } from '@timeholder/asset-box/dist/test/common'
 import type {
-  TestTypes as BaseTestTypes,
+  TestTypes as AssetBoxTestTypes,
   TestContracts as BaseTestContracts,
 } from '@timeholder/asset-box/dist/test/common'
+import type { TestTypes as AssetLockerTestTypes } from '@timeholder/asset-locker/dist/test/common'
 import type {
   GetContractReturnType,
   WalletClient,
@@ -15,9 +16,8 @@ import {
   bytecode as TIMEBytecode,
 } from '../../artifacts/contracts/TIME.sol/TIME.json'
 
-export interface TestTypes extends BaseTestTypes {
+export interface TestTypes extends AssetBoxTestTypes, AssetLockerTestTypes {
   TIME: GetContractReturnType<ArtifactsMap['TIME']['abi']>
-  AssetLocker: GetContractReturnType<ArtifactsMap['AssetLocker']['abi']>
   Gov: GetContractReturnType<ArtifactsMap['Gov']['abi']>
   TimeHolder: GetContractReturnType<ArtifactsMap['TimeHolder']['abi']>
 }

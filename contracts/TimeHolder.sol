@@ -4,7 +4,8 @@ pragma solidity ^0.8.20;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ITimeHolder} from "./interface/ITimeHolder.sol";
 import {Gov} from "./base/Gov.sol";
-import {AssetLocker} from "./AssetLocker.sol";
+import {AssetBox} from "@timeholder/asset-box/contracts/AssetBox.sol";
+import {AssetLocker} from "@timeholder/asset-locker/contracts/AssetLocker.sol";
 
 contract TimeHolder is ITimeHolder, Gov {
   function name()
@@ -16,17 +17,64 @@ contract TimeHolder is ITimeHolder, Gov {
   function version()
   external pure virtual override
   returns (string memory) {
-    return "1.2.0";
+    return "1.3.0";
   }
 
-  error LockerHasBeenUnlocked(address payable locker);
+  error CreationFeeInsufficient(uint256 paid, uint256 needed);
+  error LockerHasBeenUnlocked(address locker);
 
+  uint256 private _creationFee;
   uint256 private _amountPerSecond;
 
-  function initialize(address initialGovToken, uint256 initialAmountPerSecond)
+  function initialize(address initialGovToken, uint256 initialCreationFee, uint256 initialAmountPerSecond)
   public initializer {
     Gov.initialize(initialGovToken);
+    _setCreationFee(initialCreationFee);
     _setAmountPerSecond(initialAmountPerSecond);
+  }
+
+  function creationFee()
+  public view
+  returns (uint256) {
+    return _creationFee;
+  }
+
+  function setCreationFee(uint256 fee)
+  external
+  onlyOwner {
+    _setCreationFee(fee);
+  }
+
+  function _setCreationFee(uint256 fee)
+  internal {
+    _creationFee = fee;
+    emit SetCreationFee(fee);
+  }
+
+  function createAssetBox(address initialOwner)
+  external payable
+  returns (address) {
+    uint256 fee = creationFee();
+    if (msg.value < fee) revert CreationFeeInsufficient(msg.value, fee);
+    AssetBox box = new AssetBox(initialOwner);
+    emit BoxCreated(address(box), fee);
+    return address(box);
+  }
+
+  function createAssetLocker(address initialOwner, address initialGuardian, uint256 lockTime)
+  external payable
+  returns (address) {
+    uint256 fee = creationFee();
+    if (msg.value < fee) revert CreationFeeInsufficient(msg.value, fee);
+    AssetLocker box = new AssetLocker(initialOwner, initialGuardian, lockTime);
+    emit BoxCreated(address(box), fee);
+    return address(box);
+  }
+
+  function amountPerSecond()
+  public view
+  returns (uint256) {
+    return _amountPerSecond;
   }
 
   function setAmountPerSecond(uint256 amount)
@@ -39,12 +87,6 @@ contract TimeHolder is ITimeHolder, Gov {
   internal {
     _amountPerSecond = amount;
     emit SetAmountPerSecond(amount);
-  }
-
-  function getAmountPerSecond()
-  public view
-  returns (uint256) {
-    return _amountPerSecond;
   }
 
   function unlock(address payable locker)
@@ -60,7 +102,7 @@ contract TimeHolder is ITimeHolder, Gov {
   returns (uint256) {
     uint256 unlockTime = AssetLocker(locker).unlockTime();
     if (unlockTime <= block.timestamp) return 0;
-    return (unlockTime - block.timestamp) * getAmountPerSecond();
+    return (unlockTime - block.timestamp) * amountPerSecond();
   }
 
   function shortenUnlockTime(address payable locker, uint256 shortenedTime)
@@ -78,7 +120,7 @@ contract TimeHolder is ITimeHolder, Gov {
     if (unlockTime <= block.timestamp) return 0;
     uint256 lockTime = unlockTime - block.timestamp;
     if (lockTime < shortenedTime) shortenedTime = lockTime;
-    return shortenedTime * getAmountPerSecond();
+    return shortenedTime * amountPerSecond();
   }
 
   function transferGuardianship(address payable locker, address newGuardian)

@@ -4,10 +4,16 @@ import {
 } from '@nomicfoundation/hardhat-toolbox-viem/network-helpers'
 import { viem } from 'hardhat'
 import { assert } from 'chai'
-import { getAddress, parseUnits } from 'viem'
+import { getAddress, parseEther, parseUnits, zeroAddress } from 'viem'
 import { testGov } from './asserts/Gov'
 import { deployProxy } from '../utils'
 import { deployContracts } from './common'
+import type {
+  Address,
+  Hash,
+  ContractEventName,
+  GetContractReturnType,
+} from 'viem'
 import type {
   PublicClient,
   WalletClient,
@@ -26,9 +32,9 @@ describe('TimeHolder', () => {
     const amountPerSecond = BigInt(10 ** (await TIME.read.decimals()))
     const TimeHolder = await deployProxy(
       'TimeHolder',
-      [TIME.address, amountPerSecond],
+      [TIME.address, parseEther('0.001'), amountPerSecond],
       {
-        initializer: 'initialize(address,uint256)',
+        initializer: 'initialize(address,uint256,uint256)',
         kind: 'uups',
       },
     )
@@ -66,6 +72,25 @@ describe('TimeHolder', () => {
     }
   }
 
+  async function getEventLog(
+    TimeHolder: GetContractReturnType,
+    publicClient: PublicClient,
+    hash: Hash,
+    eventName: ContractEventName<TestTypes['TimeHolder']['abi']>,
+  ) {
+    const transaction = await publicClient.waitForTransactionReceipt({ hash })
+    const filter = await publicClient.createContractEventFilter({
+      address: TimeHolder.address,
+      abi: TimeHolder.abi,
+      fromBlock: transaction.blockNumber,
+      toBlock: transaction.blockNumber,
+      eventName,
+      strict: true,
+    })
+    const logs = await publicClient.getFilterLogs({ filter })
+    return logs.find(log => log.transactionHash === hash)
+  }
+
   testGov(
     'TimeHolder',
     async () => {
@@ -79,10 +104,16 @@ describe('TimeHolder', () => {
     {
       stateTest: {
         extra: async () => {
-          it('#getAmountPerSecond()', async () => {
+          it('#creationFee()', async () => {
+            const { TimeHolder } = await loadFixture(deployFixture)
+            const creationFee = (await TimeHolder.read.creationFee()) as bigint
+            assert.equal(creationFee, parseEther('0.001'))
+          })
+
+          it('#amountPerSecond()', async () => {
             const { TimeHolder } = await loadFixture(deployFixture)
             const amountPerSecond =
-              (await TimeHolder.read.getAmountPerSecond()) as bigint
+              (await TimeHolder.read.amountPerSecond()) as bigint
             const govTokenDecimals =
               (await TimeHolder.read.govTokenDecimals()) as number
             assert.equal(amountPerSecond, BigInt(10 ** govTokenDecimals))
@@ -91,6 +122,37 @@ describe('TimeHolder', () => {
       },
       securityTest: {
         extra: async () => {
+          it('#setCreationFee()', async () => {
+            const { TimeHolder, owner, hacker } =
+              await loadFixture(deployFixture)
+
+            await assert.isRejected(
+              hacker.writeContract({
+                address: TimeHolder.address,
+                abi: TimeHolder.abi,
+                functionName: 'setCreationFee',
+                args: [0n],
+              }),
+              'OwnableUnauthorizedAccount',
+            )
+
+            await owner.writeContract({
+              address: TimeHolder.address,
+              abi: TimeHolder.abi,
+              functionName: 'setCreationFee',
+              args: [0n],
+            })
+            assert.equal(await TimeHolder.read.creationFee(), 0n)
+
+            await owner.writeContract({
+              address: TimeHolder.address,
+              abi: TimeHolder.abi,
+              functionName: 'setCreationFee',
+              args: [parseEther('1')],
+            })
+            assert.equal(await TimeHolder.read.creationFee(), parseEther('1'))
+          })
+
           it('#setAmountPerSecond()', async () => {
             const { TimeHolder, AssetLocker, owner, hacker } =
               await loadFixture(deployFixture)
@@ -116,8 +178,7 @@ describe('TimeHolder', () => {
               functionName: 'setAmountPerSecond',
               args: [0n],
             })
-            assert.equal(await TimeHolder.read.getAmountPerSecond(), 0n)
-
+            assert.equal(await TimeHolder.read.amountPerSecond(), 0n)
             assert.equal(
               await TimeHolder.read.getAmountForUnlock([AssetLocker.address]),
               0n,
@@ -129,6 +190,85 @@ describe('TimeHolder', () => {
   )
 
   describe('Functions', () => {
+    it('#createAssetBox()', async () => {
+      const { TimeHolder, publicClient, user } =
+        await loadFixture(deployFixture)
+
+      await assert.isRejected(
+        user.writeContract({
+          address: TimeHolder.address,
+          abi: TimeHolder.abi,
+          functionName: 'createAssetBox',
+          args: [user.account.address],
+        }),
+        'CreationFeeInsufficient',
+      )
+
+      const hash = await user.writeContract({
+        address: TimeHolder.address,
+        abi: TimeHolder.abi,
+        functionName: 'createAssetBox',
+        args: [user.account.address],
+        value: parseEther('0.001'),
+      })
+      const log = await getEventLog(
+        TimeHolder,
+        publicClient,
+        hash,
+        'BoxCreated',
+      )
+      // @ts-ignore
+      const boxAddress = log?.args?.box as Address
+      const AssetBox = await viem.getContractAt('AssetBox', boxAddress)
+      assert.equal(
+        await AssetBox.read.owner(),
+        getAddress(user.account.address),
+      )
+    })
+
+    it('#createAssetLocker()', async () => {
+      const { TimeHolder, publicClient, user } =
+        await loadFixture(deployFixture)
+      const lockTime = 3600 * 24 * 30
+
+      await assert.isRejected(
+        user.writeContract({
+          address: TimeHolder.address,
+          abi: TimeHolder.abi,
+          functionName: 'createAssetLocker',
+          args: [user.account.address, TimeHolder.address, lockTime],
+        }),
+        'CreationFeeInsufficient',
+      )
+
+      const hash = await user.writeContract({
+        address: TimeHolder.address,
+        abi: TimeHolder.abi,
+        functionName: 'createAssetLocker',
+        args: [user.account.address, TimeHolder.address, lockTime],
+        value: parseEther('0.001'),
+      })
+      const createTime = await time.latest()
+      const log = await getEventLog(
+        TimeHolder,
+        publicClient,
+        hash,
+        'BoxCreated',
+      )
+      // @ts-ignore
+      const boxAddress = log?.args?.box as Address
+      const AssetLocker = await viem.getContractAt('AssetLocker', boxAddress)
+      assert.equal(
+        await AssetLocker.read.owner(),
+        getAddress(user.account.address),
+      )
+      assert.equal(await AssetLocker.read.guardian(), TimeHolder.address)
+      assert.equal(
+        await AssetLocker.read.unlockTime(),
+        BigInt(createTime + lockTime),
+      )
+    })
+
     it('#unlock() #getAmountForUnlock()', async () => {
       const { TIME, USDC, TimeHolder, AssetLocker, user } =
         await loadFixture(deployFixture)
