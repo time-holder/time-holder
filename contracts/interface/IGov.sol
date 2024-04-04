@@ -5,12 +5,12 @@ interface IGov {
   event SetGovToken(address govToken);
 
   /**
-   * @dev Set the contract address for the governance token.
+   * @dev Set the governance token for the contract.
    */
   function setGovToken(address newGovToken) external;
 
   /**
-   * @dev Returns the contract address for the governance token.
+   * @dev Returns the governance token for the contract.
    */
   function govToken() external view returns (address);
 

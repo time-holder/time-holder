@@ -43,7 +43,7 @@ interface ITimeHolder {
   /**
    * @dev Unlock locker.
    */
-  function unlock(address payable locker) external;
+  function unlock(address payable locker) external payable;
 
   /**
    * @dev Get the amount needed to unlock.
@@ -57,7 +57,7 @@ interface ITimeHolder {
    *
    * @param shortenedTime is seconds and must be greater than `0`.
    */
-  function shortenUnlockTime(address payable locker, uint256 shortenedTime) external;
+  function shortenUnlockTime(address payable locker, uint256 shortenedTime) external payable;
 
   /**
    * @dev Get the amount needed to shorten unlock time.

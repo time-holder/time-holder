@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ITimeHolder} from "./interface/ITimeHolder.sol";
 import {Gov} from "./base/Gov.sol";
 import {AssetBox} from "@timeholder/asset-box/contracts/AssetBox.sol";
@@ -17,10 +16,9 @@ contract TimeHolder is ITimeHolder, Gov {
   function version()
   external pure virtual override
   returns (string memory) {
-    return "1.3.0";
+    return "1.3.3";
   }
 
-  error CreationFeeInsufficient(uint256 paid, uint256 needed);
   error LockerHasBeenUnlocked(address locker);
 
   uint256 private _creationFee;
@@ -55,7 +53,7 @@ contract TimeHolder is ITimeHolder, Gov {
   external payable
   returns (address) {
     uint256 fee = creationFee();
-    if (msg.value < fee) revert CreationFeeInsufficient(msg.value, fee);
+    _receive(govToken(), fee);
     AssetBox box = new AssetBox(initialOwner);
     emit BoxCreated(address(box), fee);
     return address(box);
@@ -65,7 +63,7 @@ contract TimeHolder is ITimeHolder, Gov {
   external payable
   returns (address) {
     uint256 fee = creationFee();
-    if (msg.value < fee) revert CreationFeeInsufficient(msg.value, fee);
+    _receive(govToken(), fee);
     AssetLocker box = new AssetLocker(initialOwner, initialGuardian, lockTime);
     emit BoxCreated(address(box), fee);
     return address(box);
@@ -90,10 +88,10 @@ contract TimeHolder is ITimeHolder, Gov {
   }
 
   function unlock(address payable locker)
-  external {
+  external payable {
     uint256 amount = getAmountForUnlock(locker);
     if (amount == 0) revert LockerHasBeenUnlocked(locker);
-    IERC20(govToken()).transferFrom(msg.sender, address(this), amount);
+    _receive(govToken(), amount);
     AssetLocker(locker).unlock();
   }
 
@@ -106,10 +104,10 @@ contract TimeHolder is ITimeHolder, Gov {
   }
 
   function shortenUnlockTime(address payable locker, uint256 shortenedTime)
-  external {
+  external payable {
     uint256 amount = getAmountForShortenUnlockTime(locker, shortenedTime);
     if (amount == 0) revert LockerHasBeenUnlocked(locker);
-    IERC20(govToken()).transferFrom(msg.sender, address(this), amount);
+    _receive(govToken(), amount);
     AssetLocker(locker).shortenUnlockTime(shortenedTime);
   }
 

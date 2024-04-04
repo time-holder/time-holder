@@ -12,6 +12,14 @@ const config: HardhatUserConfig = {
         runs: 200,
       }
     }
+  },
+  networks: {
+    mainnet: {
+      url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+      accounts: [
+        process.env.WALLET_PRIVATE_KEY as string
+      ].filter(Boolean)
+    }
   }
 }
 

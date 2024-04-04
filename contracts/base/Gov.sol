@@ -19,6 +19,8 @@ abstract contract Gov is IGov, NFTHolder, Receivable, Withdrawable, Initializabl
   external pure virtual
   returns (string memory);
 
+  error Underpayment(uint256 paid, uint256 needed);
+
   address private _govToken;
 
   function initialize(address initialGovToken)
@@ -55,6 +57,18 @@ abstract contract Gov is IGov, NFTHolder, Receivable, Withdrawable, Initializabl
   function govTokenDecimals()
   public view virtual
   returns (uint8) {
+    if (_govToken == address(0)) return 18;
     return ERC20(_govToken).decimals();
+  }
+
+  function _receive(address token, uint256 amount)
+  internal virtual {
+    if (token == address(0)) {
+      if (msg.value < amount) revert Underpayment(msg.value, amount);
+    } else {
+      uint256 value = ERC20(token).allowance(msg.sender, address(this));
+      if (value < amount) revert Underpayment(value, amount);
+      ERC20(token).transferFrom(msg.sender, address(this), amount);
+    }
   }
 }
