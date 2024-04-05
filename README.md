@@ -8,15 +8,15 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Tests](https://github.com/time-holder/time-holder/actions/workflows/tests.yml/badge.svg)](https://github.com/time-holder/time-holder/actions/workflows/tests.yml)
 
-🤚💎✋A cryptocurrency asset management solution that turns you into **Diamond Hands.**
+🤚💎✋ A cryptocurrency asset management solution that turns you into **Diamond Hands.**
 
 ## 👋 Introduction
 
-📦 Firstly, **TIME Holder** provides users with an exclusive **Contract Wallet** ([AssetBox](https://github.com/time-holder/asset-box)), that isolates cryptographic assets from the users' wallets. This isolation prevents asset loss that might occur from negligence, such as leaking of wallet private keys or granting incorrect authorizations.
+📦 Firstly, **TIME Holder** provides users with an exclusive **Contract Wallet** ([**AssetBox**](https://github.com/time-holder/asset-box)), that isolates cryptographic assets from the users' wallets. This isolation prevents asset loss that might occur from negligence, such as leaking of wallet private keys or granting incorrect authorizations.
 
-🔒 Secondly, **TIME Holder** also provides a **Contract Wallet** with **Asset Locking Feature** ([AssetLocker](https://github.com/time-holder/asset-locker)), allowing users to lock their assets in their own exclusive contract and set a deadline. Before the deadline is reached, users will not be able to withdraw their assets. This effectively helps users overcome human weaknesses and steadfastly hold valuable assets, becoming true **Diamond Hands.**
+🔒 Secondly, **TIME Holder** also provides a **Contract Wallet** with **Asset Locking Feature** ([**AssetLocker**](https://github.com/time-holder/asset-locker)), allowing users to lock their assets in their own exclusive contract and set a deadline. Before the deadline is reached, users will not be able to withdraw their assets. This effectively helps users overcome human weaknesses and steadfastly hold valuable assets, becoming true **Diamond Hands.**
 
-⏳ Finally, **TIME Holder** is a guardian of [AssetLocker](https://github.com/time-holder/asset-locker), as well as a manager of time. It can both help users firmly hold onto valuable assets and assist in unlocking their assets when necessary.
+⏳ Finally, **TIME Holder** is a guardian of **AssetLocker**, as well as a manager of time. It can both help users firmly hold onto valuable assets and assist in unlocking their assets when necessary.
 
 ## 🛠️ Technology Stack
 

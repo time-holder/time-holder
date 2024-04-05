@@ -126,11 +126,9 @@ export function testGov(
     it('#version()', async () => {
       const { TIME, Gov } = await loadFixture(deployFixture)
       const version = await Gov.read.version()
-      // @ts-ignore
       const version2 = await viem
         .deployContract(`${contractName}V2`)
         .then(c => c.read.version())
-      // @ts-ignore
       const version3 = await viem
         .deployContract(`${contractName}V3`)
         .then(c => c.read.version())
