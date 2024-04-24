@@ -1,7 +1,7 @@
 {
   "name": "@timeholder/time-holder",
   "version": "1.3.14",
-  "description": "TIME Holder is a DApp running on EVM, designed to create a powerful and secure Contract Wallet for users. While helping users reduce the risk of asset theft, it also aids users in overcoming human weaknesses, becoming Diamond Hands in the cryptocurrency world.",
+  "description": "TIME Holder is a DApp running on EVM, designed to create a powerful and secure Contract Wallet for users, which not only helps in reducing the risk of asset theft but also aids in overcoming human weaknesses, thereby enabling users to become Diamond Hands in the cryptocurrency world.",
   "license": "MIT",
   "scripts": {
     "build": "npm run build:sol && npm run build:ts",

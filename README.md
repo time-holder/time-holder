@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Tests](https://github.com/time-holder/time-holder/actions/workflows/tests.yml/badge.svg)](https://github.com/time-holder/time-holder/actions/workflows/tests.yml)
 
-🤚💎✋ TIME Holder is a DApp running on EVM, designed to create a powerful and secure **Contract Wallet** for users. While helping users reduce the risk of asset theft, it also aids users in overcoming human weaknesses, becoming **Diamond Hands** in the cryptocurrency world.
+🤚💎✋ TIME Holder is a DApp running on [EVM](https://ethereum.org/zh/developers/docs/evm), designed to create a powerful and secure **Contract Wallet** for users, which not only helps in reducing the risk of asset theft but also aids in overcoming human weaknesses, thereby enabling users to become **Diamond Hands** in the cryptocurrency world.
 
 ## 👋 Introduction
 
