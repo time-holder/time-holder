@@ -5,7 +5,12 @@ import '@openzeppelin/hardhat-upgrades'
 import 'dotenv/config'
 import * as chains from 'viem/chains'
 import type { Chain } from 'viem'
-import blockExplorerApiKeys from './blockExplorerApiKeys.json'
+import fs from 'node:fs'
+
+let blockExplorerApiKeys = {}
+try {
+  blockExplorerApiKeys = JSON.parse(fs.readFileSync('./blockExplorerApiKeys.json', 'utf8'))
+} catch (err) {}
 
 const accounts = [
   process.env.WALLET_PRIVATE_KEY as string
